@@ -7,6 +7,8 @@ import json
 def main():
     """Runs a bunch of benchmarks, parses the results with ugly regexes and stores the outcome in a json file"""
 
+    dt = datetime.now()
+
     # Sequential write
     sequential_disk_write_output = subprocess.run('dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync,notrunc',
                                                   stdout=subprocess.PIPE, shell=True).stdout
@@ -35,9 +37,9 @@ def main():
     cpu_output = subprocess.run(['./linpack.sh'], stdout=subprocess.PIPE).stdout
     cpu = float(re.search('result: .*', cpu_output).group().replace('result: ', '').replace(' KFLOPS', ''))
 
-    with open('measurements/{:%d-%H}.json'.format(datetime.now()), 'w') as f:
+    with open('measurements/{:%d-%H}.json'.format(dt), 'w') as f:
         json.dump({
-            'time': '{:%Y-%m-%dT%H:%M:00}.json'.format(datetime.now()),
+            'time': '{:%Y-%m-%dT%H:%M:00}'.format(dt),
             'sequential_disk_read_mbs': sequential_disk_read,
             'sequential_disk_write_mbs': sequential_disk_write,
             'random_disk_read_iops': random_disk_read,
