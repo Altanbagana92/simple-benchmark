@@ -11,7 +11,7 @@ def main():
 
     # Sequential write
     sequential_disk_write_output = subprocess.run('dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync,notrunc',
-                                                  stdout=subprocess.PIPE, shell=True).stdout
+                                                  stderr=subprocess.PIPE, shell=True).stderr.decode()
     sequential_disk_write = int(re.search('\d* MB/s', sequential_disk_write_output).group().replace(' MB/s', ''))
 
     # Drop cache
@@ -19,22 +19,22 @@ def main():
 
     # Sequential read
     sequential_disk_read_output = subprocess.run('dd if=tempfile of=/dev/null bs=1M count=1024',
-                                                  stdout=subprocess.PIPE, shell=True).stdout
+                                                 stderr=subprocess.PIPE, shell=True).stderr.decode()
     sequential_disk_read = int(re.search('\d* MB/s', sequential_disk_read_output).group().replace(' MB/s', ''))
 
     # Random read and write
     random_disk_output = subprocess.run('fio --rw=randrw --name=test --size=20M --direct=1 | grep "read\|write"',
-                                        stdout=subprocess.PIPE, shell=True).stdout
+                                        stdout=subprocess.PIPE, shell=True).stdout.decode()
     random_disk_read_output, random_disk_write_output = random_disk_output.split('\n')
     random_disk_read = int(re.search('iops=\d*', random_disk_read_output).group().replace('iops=', ''))
     random_disk_write = int(re.search('iops=\d*', random_disk_write_output).group().replace('iops=', ''))
 
     # Memory
-    memory_output = subprocess.run(['./memsweep.sh'], stdout=subprocess.PIPE).stdout
+    memory_output = subprocess.run(['./memsweep.sh'], stdout=subprocess.PIPE).stdout.decode()
     memory = float(re.search('seconds: .*', memory_output).group().replace('seconds: ', ''))
 
     # CPU
-    cpu_output = subprocess.run(['./linpack.sh'], stdout=subprocess.PIPE).stdout
+    cpu_output = subprocess.run(['./linpack.sh'], stdout=subprocess.PIPE).stdout.decode()
     cpu = float(re.search('result: .*', cpu_output).group().replace('result: ', '').replace(' KFLOPS', ''))
 
     with open('measurements/{:%d-%H}.json'.format(dt), 'w') as f:
