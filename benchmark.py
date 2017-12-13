@@ -12,7 +12,7 @@ def main():
     # Sequential write
     sequential_disk_write_output = subprocess.run('dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync,notrunc',
                                                   stderr=subprocess.PIPE, shell=True).stderr.decode()
-    sequential_disk_write = int(re.search('\d* MB/s', sequential_disk_write_output).group().replace(' MB/s', ''))
+    sequential_disk_write = float(re.search(' s, \d*', sequential_disk_write_output).group().replace(' s, ', '').replace(' MB/s', ''))
 
     # Drop cache
     subprocess.run('echo 3 | sudo tee /proc/sys/vm/drop_caches', shell=True)
@@ -20,12 +20,12 @@ def main():
     # Sequential read
     sequential_disk_read_output = subprocess.run('dd if=tempfile of=/dev/null bs=1M count=1024',
                                                  stderr=subprocess.PIPE, shell=True).stderr.decode()
-    sequential_disk_read = int(re.search('\d* MB/s', sequential_disk_read_output).group().replace(' MB/s', ''))
+    sequential_disk_read = float(re.search(' s, \d*', sequential_disk_read_output).group().replace(' s, ', ''.replace(' MB/s', ''))
 
     # Random read and write
     random_disk_output = subprocess.run('fio --rw=randrw --name=test --size=20M --direct=1 | grep "read\|write"',
                                         stdout=subprocess.PIPE, shell=True).stdout.decode()
-    random_disk_read_output, random_disk_write_output = random_disk_output.split('\n')
+    random_disk_read_output, random_disk_write_output, _, _ = random_disk_output.split('\n')
     random_disk_read = int(re.search('iops=\d*', random_disk_read_output).group().replace('iops=', ''))
     random_disk_write = int(re.search('iops=\d*', random_disk_write_output).group().replace('iops=', ''))
 
