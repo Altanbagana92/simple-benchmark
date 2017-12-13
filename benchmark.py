@@ -2,12 +2,14 @@ from datetime import datetime
 import subprocess
 import re
 import json
+import os
 
 
 def main():
     """Runs a bunch of benchmarks, parses the results with ugly regexes and stores the outcome in a json file"""
 
     dt = datetime.now()
+    base_path = os.path.dirname(os.path.realpath(__file__))
 
     # Sequential write
     sequential_disk_write_output = subprocess.run('dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync,notrunc',
@@ -31,14 +33,14 @@ def main():
     random_disk_write = int(re.search('iops=\d*', random_disk_write_output).group().replace('iops=', ''))
 
     # Memory
-    memory_output = subprocess.run(['./memsweep.sh'], stdout=subprocess.PIPE).stdout.decode()
+    memory_output = subprocess.run([os.path.join(base_path, 'memsweep.sh')], stdout=subprocess.PIPE).stdout.decode()
     memory = float(re.search('seconds: .*', memory_output).group().replace('seconds: ', ''))
 
     # CPU
-    cpu_output = subprocess.run(['./linpack.sh'], stdout=subprocess.PIPE).stdout.decode()
+    cpu_output = subprocess.run([os.path.join(base_path, 'linpack.sh')], stdout=subprocess.PIPE).stdout.decode()
     cpu = float(re.search('result: .*', cpu_output).group().replace('result: ', '').replace(' KFLOPS', ''))
 
-    with open('measurements/{:%d-%H}.json'.format(dt), 'w') as f:
+    with open(os.path.join(base_path, 'measurements', '{:%d-%H}.json'.format(dt)), 'w') as f:
         json.dump({
             'time': '{:%Y-%m-%dT%H:%M:00}'.format(dt),
             'sequential_disk_read_mbs': sequential_disk_read,
