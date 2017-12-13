@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 import subprocess
 import re
 import json
@@ -7,6 +8,7 @@ import os
 
 def main():
     """Runs a bunch of benchmarks, parses the results with ugly regexes and stores the outcome in a json file"""
+    print('Running benchmark')
 
     dt = datetime.now()
     base_path = os.path.dirname(os.path.realpath(__file__))
@@ -23,6 +25,9 @@ def main():
     sequential_disk_read_output = subprocess.run('dd if=tempfile of=/dev/null bs=1M count=1024',
                                                  stderr=subprocess.PIPE, shell=True).stderr.decode()
     sequential_disk_read = float(re.search(' s, \d*', sequential_disk_read_output).group().replace(' s, ', '').replace(' MB/s', ''))
+
+    # Disk clean up
+    subprocess.run('rm tempfile test.0.0', shell=True)
 
     # Random read and write
     random_disk_output = subprocess.run('fio --rw=randrw --name=test --size=20M --direct=1 | grep "read\|write"',
@@ -51,6 +56,12 @@ def main():
             'cpu_kflops': cpu
         }, f, indent=4)
 
+    print('Finished benchmark')
+
 
 if __name__ == "__main__":
-    main()
+    while True:
+        start = time.time()
+        main()
+        end = time.time()
+        time.sleep((3600 * 4) + start - end)
