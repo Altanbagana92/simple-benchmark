@@ -1,3 +1,19 @@
+# Simple VM Benchmark
+
+## Results
+Sequential Disk
+![Sequential Disk](img/seq_disk.png)
+
+Random Disk
+![Random Disk](img/rnd_disk.png)
+
+Memory
+![Memory](img/mem.png)
+
+CPU
+![CPU](img/cpu.png)
+
+## Setup
 ssh on the AWS and Openstack VMs and run
 ```
 sudo apt-get update
