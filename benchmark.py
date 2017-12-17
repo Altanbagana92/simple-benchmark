@@ -60,7 +60,7 @@ def main():
 
 
 if __name__ == "__main__":
-    for i in range(12):
+    while True:
         start = time.time()
         main()
         end = time.time()

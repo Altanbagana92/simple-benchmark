@@ -1,16 +1,16 @@
 # Simple VM Benchmark
 
 ## Results
-Sequential Disk
+#### Sequential Disk read/write MB/s
 ![Sequential Disk](img/seq_disk.png)
 
-Random Disk
+#### Random Disk read/write IOPS
 ![Random Disk](img/rnd_disk.png)
 
-Memory
+#### Memory access performance
 ![Memory](img/mem.png)
 
-CPU
+#### CPU KFLOPS
 ![CPU](img/cpu.png)
 
 ## Setup
