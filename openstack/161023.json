@@ -1,9 +1,0 @@
-{
-    "random_disk_read_iops": 105,
-    "sequential_disk_read_mbs": 66.0,
-    "time": "2017-12-16T10:23:00",
-    "memory": 24.224,
-    "random_disk_write_iops": 102,
-    "cpu_kflops": 1787218.264,
-    "sequential_disk_write_mbs": 66.0
-}

@@ -1,9 +1,0 @@
-{
-    "memory": 3.666,
-    "cpu_kflops": 2214220.617,
-    "sequential_disk_write_mbs": 67.0,
-    "sequential_disk_read_mbs": 68.0,
-    "time": "2017-12-15T18:23:00",
-    "random_disk_read_iops": 1317,
-    "random_disk_write_iops": 1276
-}
