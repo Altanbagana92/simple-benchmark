@@ -2,16 +2,17 @@
 
 ## Results
 #### Openstack server list
-![Sequential Disk](img/seq_disk.png)
+![Sequential Disk](img/list.png)
 
 #### Openstack boot VM
-![Random Disk](img/rnd_disk.png)
+![Random Disk](img/boot.png)
 
 ## Setup
 On the Openstack VM
 ```
 sudo apt-get update
 sudo apt-get install openstack
+python3 benchmark.py
 ```
 
 To get the data
